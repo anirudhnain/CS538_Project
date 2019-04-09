@@ -19,17 +19,18 @@ contract_source_code = '''
 pragma solidity ^0.4.21;
 
 contract Greeter {
-    string public greeting;
+    bool public greeting;
 
     function Greeter() public {
-        greeting = 'Hello';
+        greeting = false;
     }
 
-    function setGreeting(string _greeting) public {
+    function setGreeting(bool _greeting) public {
         greeting = _greeting;
     }
 
-    function greet() view public returns (string) {
+    function greet() view public returns (bool) {
+        greeting = !_greeting;
         return greeting;
     }
 }
@@ -39,10 +40,11 @@ def get_channel(queue_name):
     channel = connection.channel()
     channel.queue_declare(queue=queue_name)
 def get_greeter():
-    return w3.eth.contract(
-        address='',
-        abi={},
-    )
+    return None
+    # return w3.eth.contract(
+    #     address='',
+    #     abi={},
+    # )
 def blockchain_listener(contract_addr):
     channel = get_channel("blk_to_gateway")
     event_filter = w3.eth.filter({"address":contract_addr})
@@ -51,10 +53,10 @@ def blockchain_listener(contract_addr):
                       routing_key='blk_to_gateway',
                       body=event_filter.get_new_entries())
         time.sleep(0.1)
-def gateway_listener():
+
+def gateway_listener(greeter):
     def callback(ch, method, properties, body):
-        #call smart contract function
-        pass
+        greeter.functions.greet().call()
     channel.basic_consume(queue='gateway_to_blk',
                       auto_ack=True,
                       on_message_callback=callback)
@@ -77,8 +79,7 @@ if __name__ == '__main__':
         abi=contract_interface['abi'],
         )
 
-    greeter.functions.setGreeting("Change").call()
-    print(greeter.functions.greet().call())
+   
     blockchain_listener = threading.Thread(target=blockchain_listener,args=("0x2d168915292c432147aa19e90971670879889220"))
     blockchain_listener.start()
     gateway_listener()
