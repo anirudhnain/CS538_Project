@@ -1,0 +1,17 @@
+3/31/2019:
+1) 2 Ethereum Private Nodes
+2) Bridge between Blockchain & MQTT Broker
+3) Raspberry Pi to MQTT client 
+4) Database for mapping device <-> contract 
+4) Integrate the above flow
+
+
+5) Different types of blockchain
+	- Fast transaction speed
+	- Computation No overhead for mining
+	- Bandwidth requirement
+
+6) How many clients can a full node serve?
+7) Many light nodes vs Full nodes?
+8) Codius
+ 
