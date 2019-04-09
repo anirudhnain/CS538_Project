@@ -12,3 +12,8 @@ Use "password" as your password to reduce code changes.
 
 ## To run geth
 `geth --datadir ./myDataDir --networkid 1114 --rpcaddr "0.0.0.0" --rpccorsdomain "localhost" --rpc --rpcapi="db,eth,net,web3,personal,web3" console 2>> myEth.log`
+
+
+## TODO
+Figure out who writes the contract. How does the other party hear about it?
+Advantages of API based system, data about speed.
