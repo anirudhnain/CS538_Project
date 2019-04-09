@@ -19,6 +19,9 @@ contract_source_code = '''
 pragma solidity ^0.4.21;
 
 contract Greeter {
+    event Greet(
+        bool greeting
+    );
     bool public greeting;
 
     function Greeter() public {
@@ -27,6 +30,7 @@ contract Greeter {
 
     function toggleGreeting() public {
         greeting = !greeting;
+        emit Greet(greeting);
     }
 
     function greet() view public returns (bool) {
@@ -47,7 +51,7 @@ def get_greeter():
     # )
 def blockchain_listener(contract_addr,greeter):
     channel = get_channel("blk_to_gateway")
-    event_filter = w3.eth.filter('latest')
+    event_filter = greeter.events.Greet.createFilter(fromBlock='latest')
     while True:
         entries = event_filter.get_new_entries()
         
@@ -90,6 +94,6 @@ if __name__ == '__main__':
     # print("State",greeter.functions.greet().call())
     # print(w3.eth.getTransaction(tx_receipt.transactionHash.hex()))
     # print("><>>>>>>>>>>",tx_receipt)
-    blockchain_listener = threading.Thread(target=blockchain_listener,args=(f'{greeter.address}',greeter))
+    blockchain_listener = threading.Thread(target=blockchain_listener,args=(greeter.address,greeter))
     blockchain_listener.start()
     gateway_listener(greeter)
