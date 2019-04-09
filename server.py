@@ -25,12 +25,11 @@ contract Greeter {
         greeting = false;
     }
 
-    function setGreeting(bool _greeting) public {
-        greeting = _greeting;
+    function toggleGreeting() public {
+        greeting = !greeting;
     }
 
     function greet() view public returns (bool) {
-        greeting = !_greeting;
         return greeting;
     }
 }
@@ -39,30 +38,32 @@ def get_channel(queue_name):
     connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
     channel = connection.channel()
     channel.queue_declare(queue=queue_name)
+    return channel
 def get_greeter():
     return None
     # return w3.eth.contract(
     #     address='',
     #     abi={},
     # )
-def blockchain_listener(contract_addr):
+def blockchain_listener(contract_addr,greeter):
     channel = get_channel("blk_to_gateway")
-    event_filter = w3.eth.filter({"address":contract_addr})
+    event_filter = w3.eth.filter('latest')
     while True:
-        channel.basic_publish(exchange='',
-                      routing_key='blk_to_gateway',
-                      body=event_filter.get_new_entries())
-        time.sleep(0.1)
+        entries = event_filter.get_new_entries()
+        
+        if not len(entries) == 0:
+            channel.basic_publish(exchange='', routing_key='blk_to_gateway',body=str(greeter.functions.greet().call()))
+        time.sleep(1)
 
 def gateway_listener(greeter):
-    def callback(ch, method, properties, body):
-        greeter.functions.greet().call()
+    channel = get_channel('gateway_to_blk')
+    callback = lambda ch, method, properties, body: greeter.functions.toggleGreeting().transact()
     channel.basic_consume(queue='gateway_to_blk',
                       auto_ack=True,
                       on_message_callback=callback)
     channel.start_consuming()
 if __name__ == '__main__':
-    blk_to_gateway_channel()
+    #blk_to_gateway_channel()
     w3 = Web3(Web3.HTTPProvider("http://localhost:8545"))
     greeter = get_greeter()
     if greeter == None:
@@ -79,7 +80,16 @@ if __name__ == '__main__':
         abi=contract_interface['abi'],
         )
 
-   
-    blockchain_listener = threading.Thread(target=blockchain_listener,args=("0x2d168915292c432147aa19e90971670879889220"))
+    print(greeter,greeter.address,greeter.abi)
+    # tx_hash = greeter.functions.toggleGreeting().transact()
+    # tx_receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+    # print("State",greeter.functions.greet().call())
+    # print(w3.eth.getTransaction(tx_receipt.transactionHash.hex()))
+    # tx_hash = greeter.functions.toggleGreeting().transact()
+    # tx_receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+    # print("State",greeter.functions.greet().call())
+    # print(w3.eth.getTransaction(tx_receipt.transactionHash.hex()))
+    # print("><>>>>>>>>>>",tx_receipt)
+    blockchain_listener = threading.Thread(target=blockchain_listener,args=(f'{greeter.address}',greeter))
     blockchain_listener.start()
-    gateway_listener()
+    gateway_listener(greeter)
