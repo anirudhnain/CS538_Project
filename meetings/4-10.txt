@@ -1,0 +1,26 @@
+Compare in terms of latency, cost, scalability between the public (ethereum) and private (hyperledger fabric)
+
+Latency:
+1) For latency, block generation time through one system & end to end.
+2) Variation of block generation time / hashing difficutly / number of nodes that can be supported in ethereum
+
+Cost:
+1) Cost analysis for deploying ethereum smart contract
+2) Based on use cases and frequency
+
+Authorization / Workflow:
+1) How to share smart contracts between the devices and the entire workflow? 
+2) Where should the logic reside? On the server or the contract. Server has the benefit of ease of change. 
+
+Complexity for implementation:
+1) Similar in terms of implementing an API vs smart contracts
+
+Benefits of blockchain over central coordinator:
+1) No single power over an entity. 
+2) Need complete trust
+
+1) Accountability
+2) Causality
+3) Transparency
+
+
