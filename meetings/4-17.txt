@@ -1,0 +1,13 @@
+Improved Privacy
+1) Limit the transactions in hyperledger fabric blockchain only to respective parties. Proof of concept. 
+
+Latency - Amit
+1) Variation of block generation time / hashing difficutly / number of nodes that can be supported in ethereum
+
+Full Fleshed flow
+1) Setup raspberry pi zero along with LED bulb
+
+Specific IoT Application for this:
+1) Consumer driven products
+2) Industrial deployments
+3) Public spaces
