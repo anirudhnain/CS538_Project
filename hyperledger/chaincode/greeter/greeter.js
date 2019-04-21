@@ -7,7 +7,7 @@ class Greeter extends Contract {
         console.info('============= START : Initialize Ledger ===========');
         const greeting = { greet: false }
 
-        await ctx.stub.putState("greeting", Buffer.from(JSON.stringify(cars[i])));
+        await ctx.stub.putState("greeting", Buffer.from(JSON.stringify(greeting)));
         console.info('============= END : Initialize Ledger ===========');
     }
 
@@ -23,6 +23,7 @@ class Greeter extends Contract {
         greeting.greet = !greeting.greet;
         await ctx.stub.putState("greeting", Buffer.from(JSON.stringify(greeting)));
         console.log("State Changed to: " + greetingBytes.toString());
+
         await ctx.stub.setEvent('greetingEvent', Buffer.from(JSON.stringify(greeting)));
         console.info('============= END : changeGreet ===========');
     }
