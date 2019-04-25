@@ -1,9 +1,37 @@
+'use strict';
 /*
- * SPDX-License-Identifier: Apache-2.0
+ * The light provider server connects to the hyperledger fabric as well as the Rabbit MQTT broker
  */
 
-'use strict';
+var amqp = require('amqplib/callback_api');
 
+amqp.connect('amqp://localhost', function(connErr, connection) {
+    if (connErr) {
+        throw connErr;
+    }
+    connection.createChannel(function(chErr, channel) {
+        if (chErr) {
+            throw chErr;
+        }
+
+        var queue = 'blk_to_gateway';
+
+        channel.assertQueue(queue, {durable: false});
+
+        console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", queue);
+
+        channel.consume(queue, function(msg) {
+            console.log(" [x] Received %s", msg.content.toString());
+        }, {
+            noAck: true
+        });
+    });
+});
+
+
+
+
+/*
 const { FileSystemWallet, Gateway } = require('fabric-network');
 const fs = require('fs');
 const path = require('path');
@@ -56,4 +84,4 @@ async function main() {
     }
 }
 
-main();
+main();*/
