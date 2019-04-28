@@ -1,0 +1,33 @@
+What problem are you solving? We will look for a clear description of a well-defined problem.
+
+Creating an ecosystem for Industrial IoT. The requirements of such a system include accountability, technological ease of joining, privacy etc.
+
+
+Why has past work not addressed the problem? Describe at least 3 related work, explaining differences.
+
+While using REST APIs it is possible to ensure privacy between two participants, it is hard for other organizations to join the system. n^2 APIS
+
+Another option is for a new player to provide a centralized service that allows communication with the other participants in the network. This suffers from a single point of failure. There is also the question of trusting this third party with data. Also, this comes with significant costs.
+
+None of the API options detailed above provide any accountability. Consider the case where fire sensors and sprinklers are built by two separate companies. (Not the most realistic scenario but a good working example nonetheless). If for some reason the sprinklers don't go off and there is damage to the property the party that caused the damage must be held liable for it. There are a couple of possibilities here: either the sensors didn't detect a fire or they did detect it but the sprinklers failed to go off. The logs from both companies can be tampered with. The central party's logs could also be tampered with through illicit means. This is where blockchain comes in. The ledger is tamper proof and can serve as the source of truth for the courts and the insurer. At the same time it is decentralized and trustless which gets rid of the other problems of the API approach.
+
+The existing research in this area focuses on the emergence of fog computing and the rise of lightnodes. It is focused on creating a completely decentralized system where the cloud plays no role.  This has many problems such as there being not enough power in the fog, ethereum full nodes rejecting connections from light nodes and some privacy issues on top. The privacy issues are a result of the choice of blockchain. Most blockchains run code on all nodes which means that everybody has all the smart contracts, thus taking away a slice of privacy. There is also the problem of high latency in the most popular blockchain systems.
+
+
+What is your design approach for solving it?
+
+We propose the inclusion of the cloud in the system. This enables us to run full nodes on the cloud. This also means that there are very few changes in the rest of the system. Updating end user devices is easy as that technology is well tested when updating through the cloud.
+
+One of the possibilities is using a public 
+ along with the use of a permissioned blockchain that does not use proof of work as its consensus mechanism. Such a blockchain is 
+
+How did you evaluate your project?  That is, what question were you looking to answer, or what metric were you trying to test or quantify?
+It is very hard to actually quantify the results of this project. Nonetheless latency measurements and tps can be compared to establish that a blockchain based approach is comparable to the usual cloud based approach with respect to said parameters.
+
+
+accountability - done
+
+
+What are your overall results?  To what extent did it achieve the original goal of the problem?least
+
+https://arxiv.org/pdf/1901.00910.pdf
