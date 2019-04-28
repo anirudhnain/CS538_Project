@@ -27,13 +27,13 @@ def initMqttClient():
 
 
 def initContract(w3):
-    print("Initializing contract")
+    print("Initializing contract",flush=True)
     greeter = get_contract(w3)
     w3.eth.defaultAccount = w3.eth.accounts[0]
     personal = web3.personal.Personal(w3)
     personal.unlockAccount(w3.eth.accounts[0],"password")
     if greeter == None:
-        print("No contract. Creating new greeter contract")
+        print("No contract. Creating new greeter contract",flush=True)
         compiled_sol = compile_source(contract_source_code) # Compiled source code
         contract_interface = compiled_sol['<stdin>:Greeter']
         Greeter = w3.eth.contract(abi=contract_interface['abi'], bytecode=contract_interface['bin'])
@@ -47,20 +47,23 @@ def initContract(w3):
 
 
 def onScanCallBack(client, userdata, message):
-    print("Received a mqtt message")
+    print("Received a mqtt message",flush=True)
+    print("contract:",contract, flush=True)
     if contract is not None:
+        print("Transacting with the contract",flush=True)
         contract.functions.toggleGreeting().transact()
         logTime(logFile,"publishedTxToBlockchain")
-        print("Successfully state changed inside the contract")
+        print("Successfully state changed inside the contract",flush=True)
 
 
 if __name__ == '__main__':
+    print("Starting nfc ethereum server\n", flush=True)
     mqttClient =  initMqttClient()
     w3 = Web3(Web3.HTTPProvider("http://localhost:8545"))
     contract = initContract(w3)
     print(contract,contract.address,contract.abi)
     mqttClient.subscribe("onPayment/1", 1, onScanCallBack)
-    print("Listening for msgs from scanner")
+    print("Listening for msgs from scanner\n",flush=True)
     while True:
-        sleep(1)
+        sleep(5)
     closeFile(logFile)
